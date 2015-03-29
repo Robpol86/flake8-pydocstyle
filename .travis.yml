@@ -1,0 +1,13 @@
+language: python
+
+install:
+  - pip install codecov tox
+
+script:
+  - tox
+  - (cd ./tests && ls .coverage.py34 .coverage.py33 .coverage.pypy3 .coverage.pypy .coverage.py27 .coverage.py26)
+
+after_success:
+  - mv tests/.coverage* .
+  - coverage combine
+  - codecov
