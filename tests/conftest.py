@@ -1,5 +1,6 @@
 """Plugins for pytest."""
 
+import os
 from textwrap import dedent
 
 import pytest
@@ -35,4 +36,6 @@ def sample_module():
         './sample_module.py:14:1: D204 1 blank line required after class docstring (found 0)\n'
         './sample_module.py:14:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
     )
-    return dedent(code), expected, expected.replace('./sample_module.py:', 'stdin:')
+    expected_windows = expected.replace('./sample_module.py:', r'.\sample_module.py:')
+    expected_stdin = expected.replace('./sample_module.py:', 'stdin:')
+    return dedent(code), expected_windows if os.name == 'nt' else expected, expected_stdin
