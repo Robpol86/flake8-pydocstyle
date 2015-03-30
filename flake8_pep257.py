@@ -5,10 +5,28 @@ https://pypi.python.org/pypi/flake8-pep257
 """
 
 import pep257
+import pep8
 
 __author__ = '@Robpol86'
 __license__ = 'MIT'
 __version__ = '0.0.1'
+
+
+def load_file(filename):
+    """Read file to memory.
+
+    From: https://github.com/public/flake8-import-order/blob/620a376/flake8_import_order/__init__.py#L201
+
+    Positional arguments:
+    filename -- file path or 'stdin'. From Main().filename.
+
+    Returns:
+    Tuple, first item is the filename or 'stdin', second are the contents of the file.
+    """
+    if filename in ('stdin', '-', None):
+        return 'stdin', pep8.stdin_get_value()
+    with open(filename) as f:
+        return filename, f.read()
 
 
 def ignore(code):
@@ -49,18 +67,16 @@ class Main(object):
     def parse_options(cls, options):
         cls.options['explain'] = bool(options.explain)
         cls.options['ignore'] = options.ignore
+        cls.options['show-source'] = options.show_source
 
     def run(self):
-        if self.filename != 'stdin':
-            filename = self.filename
-            with open(self.filename) as f:
-                source = f.read()
-        else:
-            raise NotImplementedError
+        pep257.Error.explain = self.options['explain']
+        pep257.Error.source = self.options['show-source']
+        filename, source = load_file(self.filename)
         for error in pep257.PEP257Checker().check_source(source, filename):
             if not hasattr(error, 'code') or ignore(error.code):
                 continue
             lineno = error.line
             offset = 0  # Column number starting from 0.
-            text = error.message
+            text = '{0} {1}'.format(error.code, error.message.split(': ', 1)[1])
             yield lineno, offset, text, Main
