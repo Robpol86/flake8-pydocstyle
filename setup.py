@@ -112,7 +112,7 @@ ALL_DATA = dict(
     classifiers=CLASSIFIERS,
     cmdclass={PyTest.CMD: PyTest, PyTestPdb.CMD: PyTestPdb, PyTestCovWeb.CMD: PyTestCovWeb},
     description=DESCRIPTION,
-    entry_points={'flake8.extension': 'flake8_pep257 = flake8_pep257:Main'},
+    entry_points={'flake8.extension': 'D = flake8_pep257:Main'},
     install_requires=_requires('requirements.txt'),
     keywords=KEYWORDS,
     long_description=_safe_read('README.rst', 15000),
