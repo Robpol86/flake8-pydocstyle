@@ -30,7 +30,7 @@ def load_file(filename):
 
 
 def ignore(code):
-    """Should this code be ignored?
+    """Should this code be ignored.
 
     Positional arguments:
     code -- error code (e.g. D201).
@@ -53,11 +53,18 @@ class Main(object):
     version = __version__
 
     def __init__(self, tree, filename):
-        self.tree = tree  # python file tokenized into a list.
-        self.filename = filename  # filename to analyze or 'stdin'.
+        """Constructor.
+
+        Positional arguments:
+        tree -- tokenized source code, not used.
+        filename -- single filename to analyze or 'stdin'.
+        """
+        self.tree = tree
+        self.filename = filename
 
     @classmethod
     def add_options(cls, parser):
+        """Add options to flake8."""
         options = dict((o.get_opt_string(), o) for o in pep257.get_option_parser().option_list)
         option_explain = options.pop('--explain')
         parser.add_options([option_explain, ])
@@ -65,11 +72,13 @@ class Main(object):
 
     @classmethod
     def parse_options(cls, options):
+        """Read parsed options from flake8."""
         cls.options['explain'] = bool(options.explain)
         cls.options['ignore'] = options.ignore
         cls.options['show-source'] = options.show_source
 
     def run(self):
+        """Run analysis on a single file."""
         pep257.Error.explain = self.options['explain']
         pep257.Error.source = self.options['show-source']
         filename, source = load_file(self.filename)

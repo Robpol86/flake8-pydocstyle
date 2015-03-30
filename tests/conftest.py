@@ -1,3 +1,5 @@
+"""Plugins for pytest."""
+
 from textwrap import dedent
 
 import pytest
@@ -5,6 +7,7 @@ import pytest
 
 @pytest.fixture
 def sample_module():
+    """Sample python module for testing."""
     code = """\
     #!/usr/bin/env python
     import sys
@@ -13,9 +16,9 @@ def sample_module():
     def error(message, code=1):
         '''Prints error message to stderr and exits with a status of 1.'''
         if message:
-            print('ERROR: {0}'.format(message), file=sys.stderr)
+            print('ERROR: {0}'.format(message))
         else:
-            print(file=sys.stderr)
+            print()
         sys.exit(code)
 
 
@@ -32,4 +35,4 @@ def sample_module():
         './sample_module.py:14:1: D204 1 blank line required after class docstring (found 0)\n'
         './sample_module.py:14:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
     )
-    return dedent(code), expected
+    return dedent(code), expected, expected.replace('./sample_module.py:', 'stdin:')
