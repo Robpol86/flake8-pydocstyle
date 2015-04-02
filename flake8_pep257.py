@@ -46,7 +46,7 @@ def ignore(code):
 
 
 class Main(object):
-    """TODO fill this out."""
+    """pep257 flake8 plugin."""
 
     name = 'flake8-pep257'
     options = dict()
