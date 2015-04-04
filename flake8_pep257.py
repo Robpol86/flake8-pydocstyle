@@ -46,7 +46,7 @@ def ignore(code):
 
 
 def parse_args(func, *args, **kwargs):
-    """Overwrites argparse.parse_args() with always-empty arguments."""
+    """Used to fool argparse/optparse into thinking sys.argv[1:] is always empty."""
     if args and args[0]:
         args = [[]] + list(args[1:])
     return func(*args, **kwargs)
