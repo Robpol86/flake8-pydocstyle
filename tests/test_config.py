@@ -7,9 +7,10 @@ import flake8.main
 import pytest
 
 
+@pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
 @pytest.mark.parametrize('stdin', [True, False])
-def test(tmpdir, capsys, sample_module, monkeypatch, stdin):
-    """Test default settings."""
+def test_ignore(tmpdir, capsys, sample_module, monkeypatch, stdin, which_cfg):
+    """Test ignore setting in all supported config sources."""
     sys.argv = ['flake8', '-' if stdin else '.', '-j1']
     os.chdir(str(tmpdir.ensure('project_dir', dir=True)))
 
@@ -18,6 +19,11 @@ def test(tmpdir, capsys, sample_module, monkeypatch, stdin):
     else:
         with open('sample_module.py', 'w') as f:
             f.write(sample_module)
+
+    cfg = which_cfg.split()
+    section = cfg[1] if len(cfg) > 1 else 'pep257'
+    with open(cfg[0], 'w') as f:
+        f.write('[{0}]\nignore = D203,D204\n'.format(section))
 
     with pytest.raises(SystemExit):
         flake8.main.main()
@@ -28,8 +34,6 @@ def test(tmpdir, capsys, sample_module, monkeypatch, stdin):
         './sample_module.py:1:1: D100 Missing docstring in public module\n'
         './sample_module.py:5:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
         './sample_module.py:5:1: D401 First line should be in imperative mood (\'Print\', not \'Prints\')\n'
-        './sample_module.py:14:1: D203 1 blank line required before class docstring (found 0)\n'
-        './sample_module.py:14:1: D204 1 blank line required after class docstring (found 0)\n'
         './sample_module.py:14:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
     )
     if stdin:

@@ -45,6 +45,13 @@ def ignore(code):
     return False
 
 
+def parse_args(func, *args, **kwargs):
+    """Overwrites argparse.parse_args() with always-empty arguments."""
+    if args and args[0]:
+        args = [[]] + list(args[1:])
+    return func(*args, **kwargs)
+
+
 class Main(object):
     """pep257 flake8 plugin."""
 
@@ -73,9 +80,21 @@ class Main(object):
     @classmethod
     def parse_options(cls, options):
         """Read parsed options from flake8."""
+        # Handle flake8 options.
         cls.options['explain'] = bool(options.explain)
         cls.options['ignore'] = options.ignore
         cls.options['show-source'] = options.show_source
+
+        # Handle pep257 options.
+        opt_parser = pep257.get_option_parser()
+        setattr(opt_parser, '_get_args', lambda *_: list())
+        native_options = vars(pep257.get_options(['.'], opt_parser))
+        native_options.pop('match', None)
+        native_options.pop('match_dir', None)
+        native_options['show-source'] = native_options.pop('source', None)
+        if native_options.get('ignore'):
+            native_options['ignore'] = native_options['ignore'].split(',')
+        cls.options.update(dict((k, v) for k, v in native_options.items() if v))
 
     def run(self):
         """Run analysis on a single file."""
