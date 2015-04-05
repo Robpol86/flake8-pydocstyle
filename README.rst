@@ -28,8 +28,8 @@ validating docstrings.
    :target: https://pypi.python.org/pypi/flake8-pep257/
    :alt: Downloads
 
-Quickstart
-==========
+`Quickstart`_
+=============
 
 Install:
 
@@ -43,22 +43,26 @@ Run:
 
     flake8
 
-Error Codes
-===========
+`Error Codes`_
+==============
 
 List of error codes are available here: http://pep257.readthedocs.org/en/latest/error_codes.html
 
-Configuration
-=============
+`Configuration`_
+================
 
-Refer to `this page <http://pep257.readthedocs.org/en/latest/usage.html>`_ for configuration files and options.
+Settings may be specified in ``tox.ini`` (under the ``[flake8]`` or ``[pep257]`` sections), ``setup.cfg``, and/or
+``.pep257``. Refer to `this page <http://pep257.readthedocs.org/en/latest/usage.html>`_ for more information.
+
+When specifying settings in ``tox.ini`` under the ``[flake8]`` section, use ``show-source`` instead of ``source`` and
+``show-pep257`` instead of ``explain``.
 
 `Changelog`_
 ============
 
 This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
-`X.X.X - 2015-XX-XX`_
+`1.0.0 - 2015-04-04`_
 ---------------------
 
 * Initial release.

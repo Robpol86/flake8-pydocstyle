@@ -9,7 +9,7 @@ import pep8
 
 __author__ = '@Robpol86'
 __license__ = 'MIT'
-__version__ = '0.0.1'
+__version__ = '1.0.0'
 
 
 def load_file(filename):
