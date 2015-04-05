@@ -72,16 +72,14 @@ class Main(object):
     @classmethod
     def add_options(cls, parser):
         """Add options to flake8."""
-        options = dict((o.get_opt_string(), o) for o in pep257.get_option_parser().option_list)
-        option_explain = options.pop('--explain')
-        parser.add_options([option_explain, ])
-        parser.config_options.append('explain')
+        parser.add_option('--show-pep257', action='store_true', help='show explanation of each PEP 257 error')
+        parser.config_options.append('show-pep257')
 
     @classmethod
     def parse_options(cls, options):
         """Read parsed options from flake8."""
         # Handle flake8 options.
-        cls.options['explain'] = bool(options.explain)
+        cls.options['explain'] = bool(options.show_pep257)
         cls.options['ignore'] = options.ignore
         cls.options['show-source'] = options.show_source
 
@@ -106,5 +104,6 @@ class Main(object):
                 continue
             lineno = error.line
             offset = 0  # Column number starting from 0.
-            text = '{0} {1}'.format(error.code, error.message.split(': ', 1)[1])
+            explanation = error.explanation if pep257.Error.explain else ''
+            text = '{0} {1}{2}'.format(error.code, error.message.split(': ', 1)[1], explanation)
             yield lineno, offset, text, Main

@@ -8,7 +8,7 @@ validating docstrings.
 * Python 2.6, 2.7, PyPy, PyPy3, 3.3, and 3.4 supported on Linux and OS X.
 * Python 2.7, 3.3, and 3.4 supported on Windows (both 32 and 64 bit versions of Python).
 
-.. image:: https://img.shields.io/appveyor/ci/Robpol86/flake8-pep257.svg?style=flat-square&label=AppVeyor
+.. image:: https://img.shields.io/appveyor/ci/Robpol86/flake8-pep257/master.svg?style=flat-square&label=AppVeyor%20CI
    :target: https://ci.appveyor.com/project/Robpol86/flake8-pep257
    :alt: Build Status Windows
 
@@ -16,15 +16,15 @@ validating docstrings.
    :target: https://travis-ci.org/Robpol86/flake8-pep257
    :alt: Build Status
 
-.. image:: https://img.shields.io/codecov/c/github/Robpol86/flake8-pep257/master.svg?style=flat-square
+.. image:: https://img.shields.io/codecov/c/github/Robpol86/flake8-pep257/master.svg?style=flat-square&label=Codecov
    :target: https://codecov.io/github/Robpol86/flake8-pep257
    :alt: Coverage Status
 
-.. image:: https://img.shields.io/pypi/v/flake8-pep257.svg?style=flat-square
+.. image:: https://img.shields.io/pypi/v/flake8-pep257.svg?style=flat-square&label=Latest
    :target: https://pypi.python.org/pypi/flake8-pep257/
    :alt: Latest Version
 
-.. image:: https://img.shields.io/pypi/dm/flake8-pep257.svg?style=flat-square
+.. image:: https://img.shields.io/pypi/dm/flake8-pep257.svg?style=flat-square&label=PyPI%20Downloads
    :target: https://pypi.python.org/pypi/flake8-pep257/
    :alt: Downloads
 
