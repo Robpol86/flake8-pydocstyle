@@ -62,6 +62,11 @@ When specifying settings in ``tox.ini`` under the ``[flake8]`` section, use ``sh
 
 This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
+`1.0.2 - 2015-04-04`_
+---------------------
+
+* Fixed setup.py requirements bug.
+
 `1.0.0 - 2015-04-04`_
 ---------------------
 
