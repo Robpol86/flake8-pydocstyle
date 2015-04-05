@@ -45,13 +45,6 @@ def ignore(code):
     return False
 
 
-def parse_args(func, *args, **kwargs):
-    """Used to fool argparse/optparse into thinking sys.argv[1:] is always empty."""
-    if args and args[0]:
-        args = [[]] + list(args[1:])
-    return func(*args, **kwargs)
-
-
 class Main(object):
     """pep257 flake8 plugin."""
 
@@ -81,7 +74,6 @@ class Main(object):
         # Handle flake8 options.
         cls.options['explain'] = bool(options.show_pep257)
         cls.options['ignore'] = options.ignore
-        cls.options['show-source'] = options.show_source
 
         # Handle pep257 options.
         opt_parser = pep257.get_option_parser()
@@ -97,7 +89,6 @@ class Main(object):
     def run(self):
         """Run analysis on a single file."""
         pep257.Error.explain = self.options['explain']
-        pep257.Error.source = self.options['show-source']
         filename, source = load_file(self.filename)
         for error in pep257.PEP257Checker().check_source(source, filename):
             if not hasattr(error, 'code') or ignore(error.code):
