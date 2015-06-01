@@ -8,16 +8,15 @@ import pytest
 
 
 @pytest.mark.parametrize('stdin', [True, False])
-def test(tmpdir, capsys, sample_module, monkeypatch, stdin):
+def test(tmpdir, capsys, sample_module_unicode, monkeypatch, stdin):
     """Test default settings."""
     sys.argv = ['flake8', '-' if stdin else '.', '-j1']
     os.chdir(str(tmpdir.ensure('project_dir', dir=True)))
 
     if stdin:
-        monkeypatch.setattr('pep8.stdin_get_value', lambda: sample_module)
+        monkeypatch.setattr('pep8.stdin_get_value', lambda: sample_module_unicode)
     else:
-        with open('sample_module.py', 'w') as f:
-            f.write(sample_module)
+        tmpdir.join('project_dir', 'sample_module.py').write(sample_module_unicode.encode('utf-8'), 'wb')
 
     with pytest.raises(SystemExit):
         flake8.main.main()
@@ -26,11 +25,11 @@ def test(tmpdir, capsys, sample_module, monkeypatch, stdin):
 
     expected = (
         './sample_module.py:1:1: D100 Missing docstring in public module\n'
-        './sample_module.py:5:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
-        './sample_module.py:5:1: D401 First line should be in imperative mood (\'Print\', not \'Prints\')\n'
-        './sample_module.py:14:1: D203 1 blank line required before class docstring (found 0)\n'
-        './sample_module.py:14:1: D204 1 blank line required after class docstring (found 0)\n'
-        './sample_module.py:14:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
+        './sample_module.py:15:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
+        './sample_module.py:15:1: D401 First line should be in imperative mood (\'Print\', not \'Prints\')\n'
+        './sample_module.py:24:1: D203 1 blank line required before class docstring (found 0)\n'
+        './sample_module.py:24:1: D204 1 blank line required after class docstring (found 0)\n'
+        './sample_module.py:24:1: D300 Use """triple double quotes""" (found \'\'\'-quotes)\n'
     )
     if stdin:
         expected = expected.replace('./sample_module.py:', 'stdin:')
