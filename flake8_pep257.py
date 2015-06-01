@@ -4,12 +4,14 @@ https://github.com/Robpol86/flake8-pep257
 https://pypi.python.org/pypi/flake8-pep257
 """
 
+from codecs import open
+
 import pep257
 import pep8
 
 __author__ = '@Robpol86'
 __license__ = 'MIT'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 
 def load_file(filename):
@@ -25,7 +27,7 @@ def load_file(filename):
     """
     if filename in ('stdin', '-', None):
         return 'stdin', pep8.stdin_get_value()
-    with open(filename) as f:
+    with open(filename, encoding='utf-8') as f:
         return filename, f.read()
 
 
