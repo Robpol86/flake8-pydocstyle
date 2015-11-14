@@ -4,14 +4,11 @@ https://github.com/Robpol86/flake8-pep257
 https://pypi.python.org/pypi/flake8-pep257
 """
 
-from codecs import open
+import codecs
 
 import pep257
 import pep8
-
-__author__ = '@Robpol86'
-__license__ = 'MIT'
-__version__ = '1.0.3'
+import pkg_resources
 
 
 def load_file(filename):
@@ -19,26 +16,24 @@ def load_file(filename):
 
     From: https://github.com/public/flake8-import-order/blob/620a376/flake8_import_order/__init__.py#L201
 
-    Positional arguments:
-    filename -- file path or 'stdin'. From Main().filename.
+    :param str filename: File path or 'stdin'. From Main().filename.
 
-    Returns:
-    Tuple, first item is the filename or 'stdin', second are the contents of the file.
+    :return: First item is the filename or 'stdin', second are the contents of the file.
+    :rtype: tuple
     """
     if filename in ('stdin', '-', None):
         return 'stdin', pep8.stdin_get_value()
-    with open(filename, encoding='utf-8') as f:
-        return filename, f.read()
+    with codecs.open(filename, encoding='utf-8') as handle:
+        return filename, handle.read()
 
 
 def ignore(code):
     """Should this code be ignored.
 
-    Positional arguments:
-    code -- error code (e.g. D201).
+    :param str code: Error code (e.g. D201).
 
-    Returns:
-    True if code should be ignored, False otherwise.
+    :return: True if code should be ignored, False otherwise.
+    :rtype: bool
     """
     if code in Main.options['ignore']:
         return True
@@ -52,27 +47,32 @@ class Main(object):
 
     name = 'flake8-pep257'
     options = dict()
-    version = __version__
+    version = getattr(pkg_resources, 'require')('flake8-pep257')[0].version
 
     def __init__(self, tree, filename):
         """Constructor.
 
-        Positional arguments:
-        tree -- tokenized source code, not used.
-        filename -- single filename to analyze or 'stdin'.
+        :param tree: Tokenized source code, not used.
+        :param str filename: Single filename to analyze or 'stdin'.
         """
         self.tree = tree
         self.filename = filename
 
     @classmethod
     def add_options(cls, parser):
-        """Add options to flake8."""
+        """Add options to flake8.
+
+        :param parser: optparse.OptionParser from pep8.
+        """
         parser.add_option('--show-pep257', action='store_true', help='show explanation of each PEP 257 error')
         parser.config_options.append('show-pep257')
 
     @classmethod
     def parse_options(cls, options):
-        """Read parsed options from flake8."""
+        """Read parsed options from flake8.
+
+        :param options: Options to add to flake8's command line options.
+        """
         # Handle flake8 options.
         cls.options['explain'] = bool(options.show_pep257)
         cls.options['ignore'] = options.ignore
