@@ -1,22 +1,28 @@
 """Basic tests."""
 
 import os
-import sys
 
 import flake8.main
 import pytest
 
 
 @pytest.mark.parametrize('stdin', [True, False])
-def test(tmpdir, capsys, sample_module_unicode, monkeypatch, stdin):
-    """Test default settings."""
-    sys.argv = ['flake8', '-' if stdin else '.', '-j1']
-    os.chdir(str(tmpdir.ensure('project_dir', dir=True)))
+def test(capsys, monkeypatch, tmpdir, sample_module_unicode, stdin):
+    """Test default settings.
+
+    :param capsys: pytest fixture.
+    :param monkeypatch: pytest fixture.
+    :param tmpdir: pytest fixture.
+    :param sample_module_unicode: conftest fixture.
+    :param bool stdin: Use stdin source instead of file.
+    """
+    monkeypatch.chdir(tmpdir)
+    monkeypatch.setattr('sys.argv', ['flake8', '-' if stdin else '.', '-j1'])
 
     if stdin:
         monkeypatch.setattr('pep8.stdin_get_value', lambda: sample_module_unicode)
     else:
-        tmpdir.join('project_dir', 'sample_module.py').write(sample_module_unicode.encode('utf-8'), 'wb')
+        tmpdir.join('sample_module.py').write(sample_module_unicode.encode('utf-8'), 'wb')
 
     with pytest.raises(SystemExit):
         flake8.main.main()

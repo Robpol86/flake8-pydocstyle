@@ -1,7 +1,6 @@
 """Basic tests."""
 
 import os
-import sys
 from textwrap import dedent
 
 import flake8.main
@@ -10,10 +9,18 @@ import pytest
 
 @pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
 @pytest.mark.parametrize('stdin', [True, False])
-def test_ignore(tmpdir, capsys, sample_module, monkeypatch, stdin, which_cfg):
-    """Test ignore setting in all supported config sources."""
-    sys.argv = ['flake8', '-' if stdin else '.', '-j1']
-    os.chdir(str(tmpdir.ensure('project_dir', dir=True)))
+def test_ignore(capsys, monkeypatch, tmpdir, sample_module, stdin, which_cfg):
+    """Test ignore setting in all supported config sources.
+
+    :param capsys: pytest fixture.
+    :param monkeypatch: pytest fixture.
+    :param tmpdir: pytest fixture.
+    :param sample_module: conftest fixture.
+    :param bool stdin: Use stdin source instead of file.
+    :param str which_cfg: Which config file to test with.
+    """
+    monkeypatch.chdir(tmpdir)
+    monkeypatch.setattr('sys.argv', ['flake8', '-' if stdin else '.', '-j1'])
 
     if stdin:
         monkeypatch.setattr('pep8.stdin_get_value', lambda: sample_module)
@@ -29,10 +36,7 @@ def test_ignore(tmpdir, capsys, sample_module, monkeypatch, stdin, which_cfg):
     with pytest.raises(SystemExit):
         flake8.main.main()
     out, err = capsys.readouterr()
-    if 'DeprecationWarning' in err and (True, 'tox.ini', (2, 6)) == (stdin, which_cfg, sys.version_info[:2]):
-        assert err  # Temporary hack until flake8 fixes https://gitlab.com/pycqa/flake8/blob/master/flake8/engine.py#L33
-    else:
-        assert not err
+    assert not err
 
     expected = (
         './sample_module.py:1:1: D100 Missing docstring in public module\n'
@@ -50,10 +54,18 @@ def test_ignore(tmpdir, capsys, sample_module, monkeypatch, stdin, which_cfg):
 
 @pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
 @pytest.mark.parametrize('stdin', [True, False])
-def test_ignore_short(tmpdir, capsys, sample_module, monkeypatch, stdin, which_cfg):
-    """Test broad ignore settings in all supported config sources."""
-    sys.argv = ['flake8', '-' if stdin else '.', '-j1']
-    os.chdir(str(tmpdir.ensure('project_dir', dir=True)))
+def test_ignore_short(capsys, monkeypatch, tmpdir, sample_module, stdin, which_cfg):
+    """Test broad ignore settings in all supported config sources.
+
+    :param capsys: pytest fixture.
+    :param monkeypatch: pytest fixture.
+    :param tmpdir: pytest fixture.
+    :param sample_module: conftest fixture.
+    :param bool stdin: Use stdin source instead of file.
+    :param str which_cfg: Which config file to test with.
+    """
+    monkeypatch.chdir(tmpdir)
+    monkeypatch.setattr('sys.argv', ['flake8', '-' if stdin else '.', '-j1'])
 
     if stdin:
         monkeypatch.setattr('pep8.stdin_get_value', lambda: sample_module)
@@ -85,10 +97,18 @@ def test_ignore_short(tmpdir, capsys, sample_module, monkeypatch, stdin, which_c
 
 @pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
 @pytest.mark.parametrize('stdin', [True, False])
-def test_explain(tmpdir, capsys, sample_module, monkeypatch, stdin, which_cfg):
-    """Test explain setting in all supported config sources."""
-    sys.argv = ['flake8', '-' if stdin else '.', '-j1']
-    os.chdir(str(tmpdir.ensure('project_dir', dir=True)))
+def test_explain(capsys, monkeypatch, tmpdir, sample_module, stdin, which_cfg):
+    """Test explain setting in all supported config sources.
+
+    :param capsys: pytest fixture.
+    :param monkeypatch: pytest fixture.
+    :param tmpdir: pytest fixture.
+    :param sample_module: conftest fixture.
+    :param bool stdin: Use stdin source instead of file.
+    :param str which_cfg: Which config file to test with.
+    """
+    monkeypatch.chdir(tmpdir)
+    monkeypatch.setattr('sys.argv', ['flake8', '-' if stdin else '.', '-j1'])
 
     if stdin:
         monkeypatch.setattr('pep8.stdin_get_value', lambda: sample_module)
