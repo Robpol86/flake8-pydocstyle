@@ -5,6 +5,7 @@ https://pypi.python.org/pypi/flake8-pep257
 """
 
 import codecs
+import os
 
 import pep257
 import pep8
@@ -78,11 +79,18 @@ class Main(object):
         cls.options['ignore'] = options.ignore
 
         # Handle pep257 options.
-        opt_parser = pep257.get_option_parser()
-        setattr(opt_parser, '_get_args', lambda *_: list())
-        native_options = vars(pep257.get_options(['.'], opt_parser))
-        native_options.pop('match', None)
-        native_options.pop('match_dir', None)
+        config = pep257.RawConfigParser()
+        for file_name in pep257.ConfigurationParser.PROJECT_CONFIG_FILES:
+            if config.read(os.path.join(os.path.abspath('.'), file_name)):
+                break
+        if not config.has_section('pep257'):
+            return
+        native_options = dict()
+        for option in config.options('pep257'):
+            if option == 'ignore':
+                native_options['ignore'] = config.get('pep257', option)
+            if option in ('explain', 'source'):
+                native_options[option] = config.getboolean('pep257', option)
         native_options['show-source'] = native_options.pop('source', None)
         if native_options.get('ignore'):
             native_options['ignore'] = native_options['ignore'].split(',')
