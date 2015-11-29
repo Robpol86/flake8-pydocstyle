@@ -6,10 +6,14 @@ from textwrap import dedent
 import pytest
 
 
-@pytest.fixture
-def sample_module():
-    """Sample python module for testing."""
-    code = """\
+@pytest.fixture(scope='function')
+def tempdir(tmpdir):
+    """A tmpdir fixture with prepared source files.
+
+    :param tmpdir: pytest fixture.
+    """
+    tmpdir.join('empty').ensure_dir()
+    tmpdir.join('sample.py').write(dedent("""\
     #!/usr/bin/env python
     import sys
 
@@ -26,14 +30,8 @@ def sample_module():
     class Test(object):
         '''Does nothing.'''
         pass
-    """
-    return dedent(code)
-
-
-@pytest.fixture
-def sample_module_unicode():
-    """Sample python module for testing with Unicode characters."""
-    code = u"""\
+    """))
+    tmpdir.join('sample_unicode.py').write(dedent(u"""\
     #!/usr/bin/env python
     import sys
 
@@ -60,5 +58,5 @@ def sample_module_unicode():
     class Test(object):
         '''Does nothing.'''
         pass
-    """
-    return dedent(code)
+    """).encode('utf-8'), mode='wb')
+    return tmpdir
