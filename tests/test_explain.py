@@ -1,10 +1,12 @@
 """Test against sample modules using the explain option in all supported config sources."""
 
 import os
-import re
+from distutils.spawn import find_executable
 
 import flake8.main
 import pytest
+
+from tests import check_output, STDOUT
 
 EXPECTED = list()
 EXPECTED.append("""\
@@ -61,6 +63,7 @@ EXPECTED.append("""\
 
         Note: Exception to this is made if the docstring contains
               \"\"\" quotes in its body.
+
 """)
 EXPECTED.append("""\
 ./sample_unicode.py:1:1: D100 Missing docstring in public module
@@ -116,6 +119,7 @@ EXPECTED.append("""\
 
         Note: Exception to this is made if the docstring contains
               \"\"\" quotes in its body.
+
 """)
 
 
@@ -148,12 +152,50 @@ def test_direct(capsys, monkeypatch, tempdir, stdin, which_cfg):
     out, err = capsys.readouterr()
     assert not err
 
+    # Clean.
     if stdin:
         expected = EXPECTED[0 if stdin == 'sample.py' else 1].replace('./{0}:'.format(stdin), 'stdin:')
     elif os.name == 'nt':
-        expected = '\n\n'.join(EXPECTED).replace('./sample', r'.\sample')
+        expected = '\n'.join(EXPECTED).replace('./sample', r'.\sample')
     else:
-        expected = '\n\n'.join(EXPECTED)
-    out = re.sub(r'\n[\t ]+\n', r'\n\n', out)
+        expected = '\n'.join(EXPECTED)
+    out = '\n'.join(l.rstrip() for l in out.splitlines())
 
-    assert expected.strip() == out.strip()
+    assert out == expected
+
+
+@pytest.mark.parametrize('stdin', ['', 'sample_unicode.py', 'sample.py'])
+@pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
+def test_subprocess(tempdir, stdin, which_cfg):
+    """Test by calling flake8 through subprocess using a dedicated python process.
+
+    :param tempdir: conftest fixture.
+    :param str stdin: Pipe this file to stdin of flake8.
+    :param str which_cfg: Which config file to test with.
+    """
+    # Prepare.
+    cwd = str(tempdir.join('empty' if stdin else ''))
+    stdin_handle = tempdir.join(stdin).open() if stdin else None
+
+    # Write configuration.
+    cfg = which_cfg.split()
+    section = cfg[1] if len(cfg) > 1 else 'pep257'
+    key = 'show-pep257' if section == 'flake8' else 'explain'
+    tempdir.join('empty' if stdin else '', cfg[0]).write('[{0}]\n{1} = True\n'.format(section, key))
+
+    # Execute.
+    command = [find_executable('flake8'), '--exit-zero', '-' if stdin else '.']
+    environ = os.environ.copy()
+    environ['COV_CORE_DATAFILE'] = ''  # Disable pytest-cov's subprocess coverage feature. Doesn't work right now.
+    out = check_output(command, stderr=STDOUT, cwd=cwd, stdin=stdin_handle, env=environ).decode('utf-8')
+
+    # Clean.
+    if stdin:
+        expected = EXPECTED[0 if stdin == 'sample.py' else 1].replace('./{0}:'.format(stdin), 'stdin:')
+    elif os.name == 'nt':
+        expected = '\n'.join(EXPECTED).replace('./sample', r'.\sample')
+    else:
+        expected = '\n'.join(EXPECTED)
+    out = '\n'.join(l.rstrip() for l in out.splitlines())
+
+    assert out == expected

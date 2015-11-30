@@ -62,6 +62,12 @@ Changelog
 
 This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
+1.0.5 - 2015-11-29
+------------------
+
+Fixed
+    * Standard input (piped in data) bug.
+
 1.0.4 - 2015-11-14
 ------------------
 

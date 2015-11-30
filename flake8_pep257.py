@@ -5,6 +5,7 @@ https://pypi.python.org/pypi/flake8-pep257
 """
 
 import codecs
+import gc
 import os
 
 import pep257
@@ -15,7 +16,14 @@ import pkg_resources
 def load_file(filename):
     """Read file to memory.
 
-    From: https://github.com/public/flake8-import-order/blob/620a376/flake8_import_order/__init__.py#L201
+    For stdin sourced files, this function does something super duper incredibly hacky and shameful. So so shameful. I'm
+    obtaining the original source code of the target module from the only instance of pep8.Checker through the Python
+    garbage collector. Flake8's API doesn't give me the original source code of the module we are checking. Instead it
+    has pep8 give me an AST object of the module (already parsed). This unfortunately loses valuable information like
+    the kind of quotes used for strings (no way to know if a docstring was surrounded by triple double quotes or just
+    one single quote, thereby rendering pep257's D300 error as unusable).
+
+    This will break one day. I'm sure of it. For now it fixes https://github.com/Robpol86/flake8-pep257/issues/2
 
     :param str filename: File path or 'stdin'. From Main().filename.
 
@@ -23,7 +31,10 @@ def load_file(filename):
     :rtype: tuple
     """
     if filename in ('stdin', '-', None):
-        return 'stdin', pep8.stdin_get_value()
+        instances = [i for i in gc.get_objects() if isinstance(i, pep8.Checker)]
+        if len(instances) != 1:
+            raise ValueError('Expected only 1 instance of pep8.Checker, got {0} instead.'.format(len(instances)))
+        return 'stdin', ''.join(instances[0].lines)
     with codecs.open(filename, encoding='utf-8') as handle:
         return filename, handle.read()
 

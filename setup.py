@@ -57,6 +57,6 @@ setup(
     name='flake8-pep257',
     py_modules=['flake8_pep257'],
     url='https://github.com/Robpol86/flake8-pep257',
-    version='1.0.4',
+    version='1.0.5',
     zip_safe=True,
 )
