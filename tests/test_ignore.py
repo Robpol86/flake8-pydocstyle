@@ -6,7 +6,7 @@ from distutils.spawn import find_executable
 import flake8.main
 import pytest
 
-from tests import check_output, STDOUT
+from tests import check_output
 
 EXPECTED = """\
 ./sample.py:1:1: D100 Missing docstring in public module
@@ -86,7 +86,7 @@ def test_subprocess(tmpdir, ignore, stdin, which_cfg):
     command = [find_executable('flake8'), '--exit-zero', '-' if stdin else '.']
     environ = os.environ.copy()
     environ['COV_CORE_DATAFILE'] = ''  # Disable pytest-cov's subprocess coverage feature. Doesn't work right now.
-    out = check_output(command, stderr=STDOUT, cwd=cwd, stdin=stdin_handle, env=environ).decode('utf-8')
+    out = check_output(command, cwd=cwd, stdin=stdin_handle, env=environ)
 
     # Clean.
     if stdin:
