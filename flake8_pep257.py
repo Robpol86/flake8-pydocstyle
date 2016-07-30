@@ -11,6 +11,7 @@ import os
 import pep257
 import pep8
 import pkg_resources
+import pycodestyle
 
 __author__ = '@Robpol86'
 __license__ = 'MIT'
@@ -21,11 +22,11 @@ def load_file(filename):
     """Read file to memory.
 
     For stdin sourced files, this function does something super duper incredibly hacky and shameful. So so shameful. I'm
-    obtaining the original source code of the target module from the only instance of pep8.Checker through the Python
-    garbage collector. Flake8's API doesn't give me the original source code of the module we are checking. Instead it
-    has pep8 give me an AST object of the module (already parsed). This unfortunately loses valuable information like
-    the kind of quotes used for strings (no way to know if a docstring was surrounded by triple double quotes or just
-    one single quote, thereby rendering pep257's D300 error as unusable).
+    obtaining the original source code of the target module from the only instance of pycodestyle.Checker through the
+    Python garbage collector. Flake8's API doesn't give me the original source code of the module we are checking.
+    Instead it has pycodestyle give me an AST object of the module (already parsed). This unfortunately loses valuable
+    information like the kind of quotes used for strings (no way to know if a docstring was surrounded by triple double
+    quotes or just one single quote, thereby rendering pep257's D300 error as unusable).
 
     This will break one day. I'm sure of it. For now it fixes https://github.com/Robpol86/flake8-pep257/issues/2
 
@@ -35,9 +36,9 @@ def load_file(filename):
     :rtype: tuple
     """
     if filename in ('stdin', '-', None):
-        instances = [i for i in gc.get_objects() if isinstance(i, pep8.Checker)]
+        instances = [i for i in gc.get_objects() if isinstance(i, pycodestyle.Checker) or isinstance(i, pep8.Checker)]
         if len(instances) != 1:
-            raise ValueError('Expected only 1 instance of pep8.Checker, got {0} instead.'.format(len(instances)))
+            raise ValueError('Expected only 1 instance of pycodestyle.Checker, got {0} instead.'.format(len(instances)))
         return 'stdin', ''.join(instances[0].lines)
     with codecs.open(filename, encoding='utf-8') as handle:
         return filename, handle.read()
@@ -78,7 +79,7 @@ class Main(object):
     def add_options(cls, parser):
         """Add options to flake8.
 
-        :param parser: optparse.OptionParser from pep8.
+        :param parser: optparse.OptionParser from pycodestyle.
         """
         parser.add_option('--show-pep257', action='store_true', help='show explanation of each PEP 257 error')
         parser.config_options.append('show-pep257')
