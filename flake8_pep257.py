@@ -10,7 +10,6 @@ import os
 
 import pep257
 import pep8
-import pkg_resources
 import pycodestyle
 
 __author__ = '@Robpol86'
@@ -64,7 +63,7 @@ class Main(object):
 
     name = 'flake8-pep257'
     options = dict()
-    version = getattr(pkg_resources, 'require')('flake8-pep257')[0].version
+    version = __version__
 
     def __init__(self, tree, filename):
         """Constructor.
