@@ -53,7 +53,7 @@ setup(
     ],
     description='Flake8 plugin for the pep257 Python utility.',
     entry_points={'flake8.extension': 'D = flake8_pep257:Main'},
-    install_requires=['flake8', 'pep257'],
+    install_requires=['flake8', 'pycodestyle', 'pep257'],
     keywords='flake8 pep257 docstrings',
     license='MIT',
     long_description=readme(),
