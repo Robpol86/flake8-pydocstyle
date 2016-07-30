@@ -6,7 +6,7 @@ from distutils.spawn import find_executable
 import flake8.main
 import pytest
 
-from tests import check_output, STDOUT
+from tests import check_output
 
 EXPECTED = list()
 EXPECTED.append("""\
@@ -125,26 +125,26 @@ EXPECTED.append("""\
 
 @pytest.mark.parametrize('stdin', ['', 'sample_unicode.py', 'sample.py'])
 @pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
-def test_direct(capsys, monkeypatch, tempdir, stdin, which_cfg):
+def test_direct(capsys, monkeypatch, tmpdir, stdin, which_cfg):
     """Test by calling flake8.main.main() using the same running python process.
 
     :param capsys: pytest fixture.
     :param monkeypatch: pytest fixture.
-    :param tempdir: conftest fixture.
+    :param tmpdir: pytest fixture.
     :param str stdin: Pipe this file to stdin of flake8.
     :param str which_cfg: Which config file to test with.
     """
     # Prepare.
-    monkeypatch.chdir(tempdir.join('empty' if stdin else ''))
+    monkeypatch.chdir(tmpdir.join('empty' if stdin else ''))
     monkeypatch.setattr('sys.argv', ['flake8', '-' if stdin else '.', '-j1'])
     if stdin:
-        monkeypatch.setattr('pep8.stdin_get_value', lambda: tempdir.join(stdin).read())
+        monkeypatch.setattr('pep8.stdin_get_value', lambda: tmpdir.join(stdin).read())
 
     # Write configuration.
     cfg = which_cfg.split()
     section = cfg[1] if len(cfg) > 1 else 'pep257'
     key = 'show-pep257' if section == 'flake8' else 'explain'
-    tempdir.join('empty' if stdin else '', cfg[0]).write('[{0}]\n{1} = True\n'.format(section, key))
+    tmpdir.join('empty' if stdin else '', cfg[0]).write('[{0}]\n{1} = True\n'.format(section, key))
 
     # Execute.
     with pytest.raises(SystemExit):
@@ -166,28 +166,28 @@ def test_direct(capsys, monkeypatch, tempdir, stdin, which_cfg):
 
 @pytest.mark.parametrize('stdin', ['', 'sample_unicode.py', 'sample.py'])
 @pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
-def test_subprocess(tempdir, stdin, which_cfg):
+def test_subprocess(tmpdir, stdin, which_cfg):
     """Test by calling flake8 through subprocess using a dedicated python process.
 
-    :param tempdir: conftest fixture.
+    :param tmpdir: pytest fixture.
     :param str stdin: Pipe this file to stdin of flake8.
     :param str which_cfg: Which config file to test with.
     """
     # Prepare.
-    cwd = str(tempdir.join('empty' if stdin else ''))
-    stdin_handle = tempdir.join(stdin).open() if stdin else None
+    cwd = str(tmpdir.join('empty' if stdin else ''))
+    stdin_handle = tmpdir.join(stdin).open() if stdin else None
 
     # Write configuration.
     cfg = which_cfg.split()
     section = cfg[1] if len(cfg) > 1 else 'pep257'
     key = 'show-pep257' if section == 'flake8' else 'explain'
-    tempdir.join('empty' if stdin else '', cfg[0]).write('[{0}]\n{1} = True\n'.format(section, key))
+    tmpdir.join('empty' if stdin else '', cfg[0]).write('[{0}]\n{1} = True\n'.format(section, key))
 
     # Execute.
     command = [find_executable('flake8'), '--exit-zero', '-' if stdin else '.']
     environ = os.environ.copy()
     environ['COV_CORE_DATAFILE'] = ''  # Disable pytest-cov's subprocess coverage feature. Doesn't work right now.
-    out = check_output(command, stderr=STDOUT, cwd=cwd, stdin=stdin_handle, env=environ).decode('utf-8')
+    out = check_output(command, cwd=cwd, stdin=stdin_handle, env=environ)
 
     # Clean.
     if stdin:

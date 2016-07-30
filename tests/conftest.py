@@ -1,18 +1,21 @@
 # coding=utf-8
-"""Plugins for pytest."""
+"""pytest fixtures for this directory."""
 
 from textwrap import dedent
 
 import pytest
 
 
-@pytest.fixture(scope='function')
-def tempdir(tmpdir):
-    """A tmpdir fixture with prepared source files.
+@pytest.fixture(autouse=True)
+def sample_code(tmpdir):
+    """Sample source files.
 
     :param tmpdir: pytest fixture.
+
+    :return: tmpdir fixture.
+    :rtype: py.path
     """
-    tmpdir.join('empty').ensure_dir()
+    tmpdir.ensure_dir('empty')
     tmpdir.join('sample.py').write(dedent("""\
     #!/usr/bin/env python
     import sys
