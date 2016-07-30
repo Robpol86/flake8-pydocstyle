@@ -12,6 +12,10 @@ import pep257
 import pep8
 import pkg_resources
 
+__author__ = '@Robpol86'
+__license__ = 'MIT'
+__version__ = '1.0.5'
+
 
 def load_file(filename):
     """Read file to memory.

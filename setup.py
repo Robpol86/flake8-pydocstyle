@@ -8,23 +8,26 @@ import os
 
 from setuptools import setup
 
+NAME = 'flake8-pep257'
+VERSION = '1.0.5'
 
-def safe_read(path):
-    """Try to read file or return empty string if failed.
 
-    :param str path: Relative file path to read.
+def readme():
+    """Try to read README.rst or return empty string if failed.
 
     :return: File contents.
     :rtype: str
     """
-    abspath, file_handle = os.path.join(os.path.abspath(os.path.dirname(__file__)), path), None
+    path = os.path.realpath(os.path.join(os.path.dirname(__file__), 'README.rst'))
+    handle = None
+    url_prefix = 'https://raw.githubusercontent.com/Robpol86/{name}/v{version}/'.format(name=NAME, version=VERSION)
     try:
-        file_handle = codecs.open(abspath, encoding='utf-8')
-        return file_handle.read(131072)
+        handle = codecs.open(path, encoding='utf-8')
+        return handle.read(131072).replace('.. image:: docs', '.. image:: {0}docs'.format(url_prefix))
     except IOError:
         return ''
     finally:
-        getattr(file_handle, 'close', lambda: None)()
+        getattr(handle, 'close', lambda: None)()
 
 
 setup(
@@ -53,10 +56,10 @@ setup(
     install_requires=['flake8', 'pep257'],
     keywords='flake8 pep257 docstrings',
     license='MIT',
-    long_description=safe_read('README.rst'),
-    name='flake8-pep257',
-    py_modules=['flake8_pep257'],
-    url='https://github.com/Robpol86/flake8-pep257',
-    version='1.0.5',
+    long_description=readme(),
+    name=NAME,
+    py_modules=[NAME.replace('-', '_')],
+    url='https://github.com/Robpol86/' + NAME,
+    version=VERSION,
     zip_safe=True,
 )

@@ -5,7 +5,7 @@ flake8-pep257
 This is just a simple flake8 plugin for the `pep257 <https://github.com/GreenSteam/pep257>`_ Python utility for
 validating docstrings.
 
-* Python 2.6, 2.7, PyPy, PyPy3, 3.3, 3.4, and 3.5 supported on Linux and OS X.
+* Python 2.6, 2.7, PyPy, 3.3, 3.4, and 3.5 supported on Linux and OS X.
 * Python 2.7, 3.3, 3.4, and 3.5 supported on Windows (both 32 and 64 bit versions of Python).
 
 .. image:: https://img.shields.io/appveyor/ci/Robpol86/flake8-pep257/master.svg?style=flat-square&label=AppVeyor%20CI
@@ -23,10 +23,6 @@ validating docstrings.
 .. image:: https://img.shields.io/pypi/v/flake8-pep257.svg?style=flat-square&label=Latest
     :target: https://pypi.python.org/pypi/flake8-pep257
     :alt: Latest Version
-
-.. image:: https://img.shields.io/pypi/dm/flake8-pep257.svg?style=flat-square&label=PyPI%20Downloads
-    :target: https://pypi.python.org/pypi/flake8-pep257
-    :alt: Downloads
 
 Quickstart
 ==========
@@ -56,6 +52,8 @@ Settings may be specified in ``tox.ini`` (under the ``[flake8]`` or ``[pep257]``
 
 When specifying settings in ``tox.ini`` under the ``[flake8]`` section, use ``show-source`` instead of ``source`` and
 ``show-pep257`` instead of ``explain``.
+
+.. changelog-section-start
 
 Changelog
 =========
@@ -90,3 +88,5 @@ Fixed
 ------------------
 
 * Initial release.
+
+.. changelog-section-end
