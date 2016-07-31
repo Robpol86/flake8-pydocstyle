@@ -8,7 +8,7 @@ import os
 
 from setuptools import setup
 
-NAME = 'flake8-pep257'
+NAME = 'flake8-pydocstyle'
 VERSION = '1.0.5'
 
 
@@ -51,10 +51,10 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Quality Assurance',
     ],
-    description='Flake8 plugin for the pep257 Python utility.',
-    entry_points={'flake8.extension': 'D = flake8_pep257:Main'},
+    description='Flake8 plugin for the pydocstyle Python utility.',
+    entry_points={'flake8.extension': 'D = flake8_pydocstyle:Main'},
     install_requires=['flake8', 'pycodestyle', 'pydocstyle'],
-    keywords='flake8 pep257 docstrings',
+    keywords='flake8 pep257 pydocstyle docstrings',
     license='MIT',
     long_description=readme(),
     name=NAME,

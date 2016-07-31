@@ -1,7 +1,7 @@
 """A simple flake8 plugin for the pydocstyle Python utility for validating docstrings.
 
-https://github.com/Robpol86/flake8-pep257
-https://pypi.python.org/pypi/flake8-pep257
+https://github.com/Robpol86/flake8-pydocstyle
+https://pypi.python.org/pypi/flake8-pydocstyle
 """
 
 import codecs
@@ -27,7 +27,7 @@ def load_file(filename):
     information like the kind of quotes used for strings (no way to know if a docstring was surrounded by triple double
     quotes or just one single quote, thereby rendering pydocstyle's D300 error as unusable).
 
-    This will break one day. I'm sure of it. For now it fixes https://github.com/Robpol86/flake8-pep257/issues/2
+    This will break one day. I'm sure of it. For now it fixes https://github.com/Robpol86/flake8-pydocstyle/issues/2
 
     :param str filename: File path or 'stdin'. From Main().filename.
 
@@ -61,7 +61,7 @@ def ignore(code):
 class Main(object):
     """pydocstyle flake8 plugin."""
 
-    name = 'flake8-pep257'
+    name = 'flake8-pydocstyle'
     options = dict()
     version = __version__
 
