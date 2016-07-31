@@ -124,7 +124,7 @@ EXPECTED.append("""\
 
 
 @pytest.mark.parametrize('stdin', ['', 'sample_unicode.py', 'sample.py'])
-@pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
+@pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pydocstyle'])
 def test_direct(capsys, monkeypatch, tmpdir, stdin, which_cfg):
     """Test by calling flake8.main.main() using the same running python process.
 
@@ -142,8 +142,8 @@ def test_direct(capsys, monkeypatch, tmpdir, stdin, which_cfg):
 
     # Write configuration.
     cfg = which_cfg.split()
-    section = cfg[1] if len(cfg) > 1 else 'pep257'
-    key = 'show-pep257' if section == 'flake8' else 'explain'
+    section = cfg[1] if len(cfg) > 1 else 'pydocstyle'
+    key = 'show-pydocstyle' if section == 'flake8' else 'explain'
     tmpdir.join('empty' if stdin else '', cfg[0]).write('[{0}]\n{1} = True\n'.format(section, key))
 
     # Execute.
@@ -165,7 +165,7 @@ def test_direct(capsys, monkeypatch, tmpdir, stdin, which_cfg):
 
 
 @pytest.mark.parametrize('stdin', ['', 'sample_unicode.py', 'sample.py'])
-@pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pep257'])
+@pytest.mark.parametrize('which_cfg', ['tox.ini', 'tox.ini flake8', 'setup.cfg', '.pydocstyle'])
 def test_subprocess(tmpdir, stdin, which_cfg):
     """Test by calling flake8 through subprocess using a dedicated python process.
 
@@ -179,8 +179,8 @@ def test_subprocess(tmpdir, stdin, which_cfg):
 
     # Write configuration.
     cfg = which_cfg.split()
-    section = cfg[1] if len(cfg) > 1 else 'pep257'
-    key = 'show-pep257' if section == 'flake8' else 'explain'
+    section = cfg[1] if len(cfg) > 1 else 'pydocstyle'
+    key = 'show-pydocstyle' if section == 'flake8' else 'explain'
     tmpdir.join('empty' if stdin else '', cfg[0]).write('[{0}]\n{1} = True\n'.format(section, key))
 
     # Execute.

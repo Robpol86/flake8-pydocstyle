@@ -1,4 +1,4 @@
-"""A simple flake8 plugin for the pep257 Python utility for validating docstrings.
+"""A simple flake8 plugin for the pydocstyle Python utility for validating docstrings.
 
 https://github.com/Robpol86/flake8-pep257
 https://pypi.python.org/pypi/flake8-pep257
@@ -8,8 +8,9 @@ import codecs
 import gc
 import os
 
-import pep257
 import pep8
+import pycodestyle
+import pydocstyle
 
 __author__ = '@Robpol86'
 __license__ = 'MIT'
@@ -20,11 +21,11 @@ def load_file(filename):
     """Read file to memory.
 
     For stdin sourced files, this function does something super duper incredibly hacky and shameful. So so shameful. I'm
-    obtaining the original source code of the target module from the only instance of pep8.Checker through the Python
-    garbage collector. Flake8's API doesn't give me the original source code of the module we are checking. Instead it
-    has pep8 give me an AST object of the module (already parsed). This unfortunately loses valuable information like
-    the kind of quotes used for strings (no way to know if a docstring was surrounded by triple double quotes or just
-    one single quote, thereby rendering pep257's D300 error as unusable).
+    obtaining the original source code of the target module from the only instance of pycodestyle.Checker through the
+    Python garbage collector. Flake8's API doesn't give me the original source code of the module we are checking.
+    Instead it has pycodestyle give me an AST object of the module (already parsed). This unfortunately loses valuable
+    information like the kind of quotes used for strings (no way to know if a docstring was surrounded by triple double
+    quotes or just one single quote, thereby rendering pydocstyle's D300 error as unusable).
 
     This will break one day. I'm sure of it. For now it fixes https://github.com/Robpol86/flake8-pep257/issues/2
 
@@ -34,9 +35,9 @@ def load_file(filename):
     :rtype: tuple
     """
     if filename in ('stdin', '-', None):
-        instances = [i for i in gc.get_objects() if isinstance(i, pep8.Checker)]
+        instances = [i for i in gc.get_objects() if isinstance(i, pycodestyle.Checker) or isinstance(i, pep8.Checker)]
         if len(instances) != 1:
-            raise ValueError('Expected only 1 instance of pep8.Checker, got {0} instead.'.format(len(instances)))
+            raise ValueError('Expected only 1 instance of pycodestyle.Checker, got {0} instead.'.format(len(instances)))
         return 'stdin', ''.join(instances[0].lines)
     with codecs.open(filename, encoding='utf-8') as handle:
         return filename, handle.read()
@@ -58,7 +59,7 @@ def ignore(code):
 
 
 class Main(object):
-    """pep257 flake8 plugin."""
+    """pydocstyle flake8 plugin."""
 
     name = 'flake8-pep257'
     options = dict()
@@ -77,10 +78,10 @@ class Main(object):
     def add_options(cls, parser):
         """Add options to flake8.
 
-        :param parser: optparse.OptionParser from pep8.
+        :param parser: optparse.OptionParser from pycodestyle.
         """
-        parser.add_option('--show-pep257', action='store_true', help='show explanation of each PEP 257 error')
-        parser.config_options.append('show-pep257')
+        parser.add_option('--show-pydocstyle', action='store_true', help='show explanation of each PEP 257 error')
+        parser.config_options.append('show-pydocstyle')
 
     @classmethod
     def parse_options(cls, options):
@@ -89,22 +90,22 @@ class Main(object):
         :param options: Options to add to flake8's command line options.
         """
         # Handle flake8 options.
-        cls.options['explain'] = bool(options.show_pep257)
+        cls.options['explain'] = bool(options.show_pydocstyle)
         cls.options['ignore'] = options.ignore
 
-        # Handle pep257 options.
-        config = pep257.RawConfigParser()
-        for file_name in pep257.ConfigurationParser.PROJECT_CONFIG_FILES:
+        # Handle pydocstyle options.
+        config = pydocstyle.RawConfigParser()
+        for file_name in pydocstyle.ConfigurationParser.PROJECT_CONFIG_FILES:
             if config.read(os.path.join(os.path.abspath('.'), file_name)):
                 break
-        if not config.has_section('pep257'):
+        if not config.has_section('pydocstyle'):
             return
         native_options = dict()
-        for option in config.options('pep257'):
+        for option in config.options('pydocstyle'):
             if option == 'ignore':
-                native_options['ignore'] = config.get('pep257', option)
+                native_options['ignore'] = config.get('pydocstyle', option)
             if option in ('explain', 'source'):
-                native_options[option] = config.getboolean('pep257', option)
+                native_options[option] = config.getboolean('pydocstyle', option)
         native_options['show-source'] = native_options.pop('source', None)
         if native_options.get('ignore'):
             native_options['ignore'] = native_options['ignore'].split(',')
@@ -112,13 +113,13 @@ class Main(object):
 
     def run(self):
         """Run analysis on a single file."""
-        pep257.Error.explain = self.options['explain']
+        pydocstyle.Error.explain = self.options['explain']
         filename, source = load_file(self.filename)
-        for error in pep257.PEP257Checker().check_source(source, filename):
+        for error in pydocstyle.PEP257Checker().check_source(source, filename):
             if not hasattr(error, 'code') or ignore(error.code):
                 continue
             lineno = error.line
             offset = 0  # Column number starting from 0.
-            explanation = error.explanation if pep257.Error.explain else ''
+            explanation = error.explanation if pydocstyle.Error.explain else ''
             text = '{0} {1}{2}'.format(error.code, error.message.split(': ', 1)[1], explanation)
             yield lineno, offset, text, Main
