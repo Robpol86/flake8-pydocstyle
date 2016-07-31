@@ -1,6 +1,6 @@
-=============
-flake8-pep257
-=============
+=================
+flake8-pydocstyle
+=================
 
 This is just a simple flake8 plugin for the `pydocstyle <https://github.com/PyCQA/pydocstyle>`_ Python utility for
 validating docstrings.
@@ -8,20 +8,20 @@ validating docstrings.
 * Python 2.6, 2.7, PyPy, 3.3, 3.4, and 3.5 supported on Linux and OS X.
 * Python 2.6, 2.7, 3.3, 3.4, and 3.5 supported on Windows (both 32 and 64 bit versions of Python).
 
-.. image:: https://img.shields.io/appveyor/ci/Robpol86/flake8-pep257/master.svg?style=flat-square&label=AppVeyor%20CI
-    :target: https://ci.appveyor.com/project/Robpol86/flake8-pep257
+.. image:: https://img.shields.io/appveyor/ci/Robpol86/flake8-pydocstyle/master.svg?style=flat-square&label=AppVeyor%20CI
+    :target: https://ci.appveyor.com/project/Robpol86/flake8-pydocstyle
     :alt: Build Status Windows
 
-.. image:: https://img.shields.io/travis/Robpol86/flake8-pep257/master.svg?style=flat-square&label=Travis%20CI
-    :target: https://travis-ci.org/Robpol86/flake8-pep257
+.. image:: https://img.shields.io/travis/Robpol86/flake8-pydocstyle/master.svg?style=flat-square&label=Travis%20CI
+    :target: https://travis-ci.org/Robpol86/flake8-pydocstyle
     :alt: Build Status
 
-.. image:: https://img.shields.io/coveralls/Robpol86/flake8-pep257/master.svg?style=flat-square&label=Coveralls
-    :target: https://coveralls.io/github/Robpol86/flake8-pep257
+.. image:: https://img.shields.io/coveralls/Robpol86/flake8-pydocstyle/master.svg?style=flat-square&label=Coveralls
+    :target: https://coveralls.io/github/Robpol86/flake8-pydocstyle
     :alt: Coverage Status
 
-.. image:: https://img.shields.io/pypi/v/flake8-pep257.svg?style=flat-square&label=Latest
-    :target: https://pypi.python.org/pypi/flake8-pep257
+.. image:: https://img.shields.io/pypi/v/flake8-pydocstyle.svg?style=flat-square&label=Latest
+    :target: https://pypi.python.org/pypi/flake8-pydocstyle
     :alt: Latest Version
 
 Quickstart
@@ -31,7 +31,7 @@ Install:
 
 .. code:: bash
 
-    pip install flake8-pep257
+    pip install flake8-pydocstyle
 
 Run:
 
@@ -64,9 +64,14 @@ Unreleased
 ----------
 
 Changed
+    * Renamed from ``flake8-pep257`` to ``flake8-pydocstyle``.
     * Switched from pep8 to pycodestyle.
     * Switched from pep257 to pydocstyle.
     * Supporting Python 2.6 on Windows.
+
+Fixed
+    * https://github.com/Robpol86/flake8-pydocstyle/issues/6
+    * https://github.com/Robpol86/flake8-pydocstyle/issues/7
 
 1.0.5 - 2015-11-29
 ------------------
